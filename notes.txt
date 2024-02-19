@@ -1,0 +1,5 @@
+https://github.com/IogaMaster/dotfiles/blob/main/modules/nixos
+https://mynixos.com/nixpkgs/options
+https://mt-caret.github.io/blog/posts/2020-06-29-optin-state.html
+https://nixos.wiki/wiki/Btrfs
+https://github.com/nix-community/disko/blob/master/example/btrfs-subvolumes.nix
