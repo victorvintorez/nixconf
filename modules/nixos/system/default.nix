@@ -3,6 +3,18 @@ with lib;
 let
   cfg = config.system;
 in {
+  imports = [
+    ./boot.nix
+    ./fonts.nix
+    ./locale.nix
+    ./networking.nix
+    ./nix.nix
+    ./nixpkgs.nix
+    ./powermgmt.nix
+    ./users.nix
+    ./hardware
+  ];
+
   options.system = {
     enable = mkEnableOption "Enable General System Defaults";
   };

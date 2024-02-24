@@ -3,6 +3,10 @@ with lib;
 let
   cfg = config.system.hardware;
 in {
+  imports = [
+    ./nvidia.nix
+  ];
+  
   options.system.hardware = {
     enable = mkEnableOption "Enable Hardware Defaults";
   };

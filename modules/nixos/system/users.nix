@@ -35,5 +35,12 @@ in {
         };
       };
     };
+
+    environment = {
+      sessionVariables = {
+        FLAKE = "/home/${cfg.name}/nixconf";
+      };
+    };
+    
   };
 }

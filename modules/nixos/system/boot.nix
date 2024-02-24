@@ -3,7 +3,7 @@ with lib;
 let
   cfg = config.system.boot;
 in {
-  options. = {
+  options.system.boot = {
     enable = mkEnableOption "Enable Boot Defaults";
   };
 

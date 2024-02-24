@@ -24,5 +24,12 @@ in {
         options = "--delete-older-than 1w";
       };
     };
+      environment = {
+    systemPackages = with pkgs; [
+      nil
+      nixfmt
+      nix-index
+    ];
+  };
   };
 }

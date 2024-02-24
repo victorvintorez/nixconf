@@ -5,6 +5,10 @@ let
 in {
   options.system.fonts = {
     enable = mkEnableOption "Enable Fonts Defaults";
+    extraFonts = mkOption {
+      type = types.listOf types.package;
+      default = [];
+    };
   };
   
   config = mkIf cfg.enable {
@@ -14,7 +18,7 @@ in {
       packages = with pkgs; [
         iosevka
         (nerdfonts.override { fonts = ["Iosevka"]; })
-      ];
+      ] ++ cfg.extraFonts;
 
       fontconfig = {
         enabled = true;

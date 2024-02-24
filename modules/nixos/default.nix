@@ -5,7 +5,6 @@
   # my-module = import ./my-module.nix;
   
   # System
-  boot = import ./system/defaults.nix
-
-
+  system = import ./system/default.nix;
+  services = import ./services/default.nix
 }
