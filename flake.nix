@@ -3,117 +3,124 @@
 
   # Cachix
   nixConfig = {
-	extra-substituters = [
-	  "https://cache.nixos.org"
-	  "https://hyprland.cachix.org"
-	];
+		extra-substituters = [
+			"https://cache.nixos.org"
+			"https://hyprland.cachix.org"
+		];
 
-	extra-trusted-public-keys = [
-	  "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
-	  "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="
-	];
+		extra-trusted-public-keys = [
+			"cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
+			"hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="
+		];
   };
 
   inputs = {
-	# Nixpkgs
-	nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
-	
-	# Home manager
-	home-manager = {
-	  url = "github:nix-community/home-manager";
-	  inputs.nixpkgs.follows = "nixpkgs";
-	};
+		# Nixpkgs
+		nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+		
+		# Home manager
+		home-manager = {
+			url = "github:nix-community/home-manager";
+			inputs.nixpkgs.follows = "nixpkgs";
+		};
 
-	# agenix
-	agenix = {
-	  url = "github:ryantm/agenix";
-	  inputs.nixpkgs.follows = "nixpkgs";
-	};
+		snowfall-lib = {
+			url = "github:snowfallorg/lib";
+			inputs.nixpkgs.follows = "nixpkgs";
+		};
 
-	# Nix-hardware
-	hardware.url = "github:nixos/nixos-hardware";
+		flake-compat = {
+			url = "github:inclyc/flake-compat";
+			flake = false;
+		};
 
-	# Hyprland
-	hyprland = {
-	  url = "github:hyprwm/Hyprland";
-	};
+		sops-nix = {
+			url = "github:Mic92/sops-nix";
+			inputs.nixpkgs.follows = "nixpkgs";
+		};
 
+		impermanence.url = "github:nix-community/impermanence";
+		persist-retro.url = "github:Geometer1729/persist-retro";
 
+		disko = {
+			url = "github:nix-community/disko";
+			inputs.nixpkgs.follows = "nixpkgs";
+		};
+
+        nix-ld = {
+            url = "github:Mic92/nix-ld";
+            inputs.nixpkgs.follows = "nixpkgs";
+        };
+
+		# Hyprland
+		hyprland = {
+			url = "github:hyprwm/Hyprland";
+		};
+
+		nix-colors.url = "github:Misterio77/nix-colors";
   };
 
-  outputs = {
-	self,
-	nixpkgs,
-	home-manager,
-	...
-  } @ inputs: let
-	inherit (self) outputs;
-	# Supported systems for your flake packages, shell, etc.
-	systems = [
-	  "x86_64-linux"
-	  "aarch64-darwin"
-	  "x86_64-darwin"
-	];
-	# This is a function that generates an attribute by calling a function you
-	# pass to it, with each system as an argument
-	forAllSystems = nixpkgs.lib.genAttrs systems;
-  in {
-	# Your custom packages
-	# Accessible through 'nix build', 'nix shell', etc
-	packages = forAllSystems (system: import ./pkgs nixpkgs.legacyPackages.${system});
-	# Formatter for your nix files, available through 'nix fmt'
-	# Other options beside 'alejandra' include 'nixpkgs-fmt'
-	formatter = forAllSystems (system: nixpkgs.legacyPackages.${system}.alejandra);
+  outputs = inputs: let
+		lib = inputs.snowfall-lib.mkLib {
+			inherit inputs;
+			src = ./.;
+			snowfall = {
+				meta = {
+					name = "nixconf";
+					title = "nixconf";
+				};
 
-	# Your custom packages and modifications, exported as overlays
-	overlays = import ./overlays {inherit inputs;};
-	# Reusable nixos modules you might want to export
-	nixosModules = import ./modules/nixos;
-	# Reusable home-manager modules you might want to export
-	homeManagerModules = import ./modules/home-manager;
-
-	# NixOS configuration entrypoint
-	# Available through 'nixos-rebuild --flake .#your-hostname'
-	nixosConfigurations = {
-		# Supernova - Desktop
-		supernova = nixpkgs.lib.nixosSystem {
-			specialArgs = {inherit inputs outputs;};
-			modules = [
-		  		./nixos/supernova/configuration.nix
-			];
+				namespace = "nixconf";
+			};
 		};
+		in
+			(lib.mkFlake {
+				inherit inputs;
+				src = ./.;
 
-		# Wormhole - Laptop
-		wormhole = nixpkgs.lib.nixosSystem {
-			specialArgs = {inherit inputs outputs;};
-			modules = [
-		  		./nixos/wormhole/configuration.nix
-			];
-		};
-	};
+				channels-config = {
+					allowUnfree = true;
+					# permittedInsecurePackages = [
+          	        #     "electron-24.8.6"
+        	        # ];
+				};
 
-	# Standalone home-manager configuration entrypoint
-	# Available through 'home-manager --flake .#your-username@your-hostname'
-	homeConfigurations = {
-		# Victor - Supernova
-		"victorv@supernova" = home-manager.lib.homeManagerConfiguration {
-			pkgs = nixpkgs.legacyPackages.x86_64-linux; # Home-manager requires 'pkgs' instance
-			extraSpecialArgs = {inherit inputs outputs;};
-			modules = [
-				# > Our main home-manager configuration file <
-				./home-manager/victorv/supernova/home.nix
-			];
-		};
+				overlays = with inputs; [];
 
-		# Victor - Wormhole
-		"victorv@wormhole" = home-manager.lib.homeManagerConfiguration {
-			pkgs = nixpkgs.legacyPackages.x86_64-linux; # Home-manager requires 'pkgs' instance
-			extraSpecialArgs = {inherit inputs outputs;};
-			modules = [
-				# > Our main home-manager configuration file <
-				./home-manager/victorv/wormhole/home.nix
-			];
-		};
-	};
-  };
+				systems = {
+                    modules.nixos = with inputs; [
+                        nix-ld.nixosModules.nix-ld
+                        disko.nixosModules.disko
+                        impermanence.nixosModules.impermanence
+                        persist-retro.nixosModules.persist-retro
+                        {
+                            fileSystems."/persist".neededForBoot = true;
+                        }
+                    ];
+
+                    hosts = {
+                        supernova.modules = with inputs; [
+                            (import ./disks/default.nix {
+                                mainDiskId = "desktop main disk";
+                                extraDiskIds = [];
+                            })
+                            {
+                                fileSystems."/persist".neededForBoot = true;
+                            }
+                        ];
+
+                        wormhole.modules = with inputs; [
+                            (import ./disks/default.nix {
+                                mainDiskId = "laptop main disk";
+                                extraDiskIds = [];
+                            })
+                            {
+                                fileSystems."/persist".neededForBoot = true;
+                            }
+                        ];
+                    };
+                };
+
+                templates = import ./templates {};
+			})
 }

@@ -6,5 +6,7 @@
   
   # System
   system = import ./system/default.nix;
-  services = import ./services/default.nix
+  services = import ./services/default.nix;
+  programs = import ./programs/default.nix;
+  desktop = import ./desktop/default.nix;
 }

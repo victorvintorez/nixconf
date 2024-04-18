@@ -11,6 +11,7 @@ in {
     ./nix.nix
     ./nixpkgs.nix
     ./powermgmt.nix
+    ./shell.nix
     ./users.nix
     ./hardware
   ];
