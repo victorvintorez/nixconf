@@ -5,7 +5,7 @@
 }: {
     disko = {
       devices = {
-        main = {
+        disk.main = {
           device = "/dev/disk/by-id/${mainDiskId}";
           type = "disk";
           content = {

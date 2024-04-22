@@ -91,6 +91,7 @@
                     modules.nixos = with inputs; [
                         nix-ld.nixosModules.nix-ld
                         disko.nixosModules.disko
+                        sops-nix.nixosModules.sops
                         impermanence.nixosModules.impermanence
                         persist-retro.nixosModules.persist-retro
                         {
