@@ -122,5 +122,5 @@
                 };
 
                 templates = import ./templates {};
-			})
+	});
 }
