@@ -32,6 +32,7 @@ in {
             ".." = "cd ..";
             cat = "bat";
             neofetch = "nitch";
+            rf = "rm -rf";
         };
 
         home.programs.eza = {

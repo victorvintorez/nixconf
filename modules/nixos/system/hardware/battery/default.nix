@@ -1,18 +1,21 @@
-{ inputs, outputs, lib, config, pkgs, ... }: 
+{
+    options,
+    config,
+    lib,
+    ...
+}:
 with lib;
+with lib.nixconf;
 let
-  cfg = config.system.powermgmt;
+    cfg = config.system.hardware.battery;
 in {
-  options.system.powermgmt = {
-    enable = mkEnableOption "Enable Power Management Defaults";
-    enableThermald = mkOption {
-      type = types.bool;
-      default = false;
-    }
-  };
-  
-  config = mkIf cfg.enable {
-    services = {
+    options.system.hardware.battery = with types; {
+        enable = mkEnableOpt;
+        
+    };
+
+    config = mkIf cfg.enable {
+        services = {
       tlp = {
         enable = true;
         settings = {
@@ -34,5 +37,5 @@ in {
         enable = true;
       };
     };
-  };
+    };
 }

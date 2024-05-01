@@ -27,6 +27,12 @@ in {
                 LESSHISTFILE = "$XDG_CACHE_HOME/less.history";
                 WGETRC = "$XDG_CONFIG_HOME/wgetrc";
             };
+
+            systemPackages = with pkgs; [
+                wget
+                curl
+                git
+            ];
         };
     };
 }

@@ -1,19 +1,21 @@
-{ inputs, outputs, lib, config, pkgs, ... }: 
+{
+    options,
+    config,
+    lib,
+    ...
+}:
 with lib;
+with lib.nixconf;
 let
-  cfg = config.system.networking;
+    cfg = config.system.hardware.networking;
 in {
-  options.system.networking = {
-    enable = mkEnableOption "Enable Networking Defaults";
-    hostname = mkOption {
-      type = types.str;
-      default = "nixos";
-      description = "The hostname of the system.";
+    options.system.hardware.networking = with types; {
+        enable = mkEnableOpt;
+        hostname = mkOpt str "nixos" "The hostname of the system";
     };
-  };
 
-  config = mkIf cfg.enable {
-    networking = {
+    config = mkIf cfg.enable {
+        networking = {
       hostName = cfg.hostname;
       networkmanager = {
         enable = true;
@@ -35,5 +37,5 @@ in {
         };
       };
     };
-  };
+    };
 }
