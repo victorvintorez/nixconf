@@ -7,7 +7,7 @@
 with lib;
 with lib.nixconf;
 let
-    cfg = config.system.hardware;
+    cfg = config.system.hardware.defaults;
 in {
     options.system.hardware = with types; {
         enable = mkEnableOpt;

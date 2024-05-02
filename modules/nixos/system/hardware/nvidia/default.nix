@@ -31,9 +31,6 @@ in {
         };
 
         environment = {
-            variables = {
-                CUDA_CACHE_PATH = "$XDG_CACHE_HOME/nv";
-            };
             shellAliases = {
                 nvidia-settings = "nvidia-settings --config='$XDG_CONFIG_HOME/nvidia/settings";
             };
